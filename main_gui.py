@@ -14,7 +14,7 @@ def resource_path(relative_path):
     base_path = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
-form_main = resource_path('main.ui')
+form_main = resource_path('window.ui')
 form_main_class = uic.loadUiType(form_main)[0]
 
 form_inventor = resource_path('inventor.ui')
