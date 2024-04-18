@@ -6,7 +6,6 @@ from PyQt5.QtCore import *
 import mysql.connector
 from PyQt5.QtWidgets import QApplication, QDialog, QLabel, QVBoxLayout, QPushButton
 from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen
-import cv2,time
 import numpy as np
 from PyQt5.QtCore import QTimer
 
@@ -14,19 +13,19 @@ def resource_path(relative_path):
     base_path = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
-form_main = resource_path('window.ui')
+form_main = resource_path('../gui/window.ui')
 form_main_class = uic.loadUiType(form_main)[0]
 
-form_inventor = resource_path('inventor.ui')
+form_inventor = resource_path('../gui/inventor.ui')
 form_inventor_class = uic.loadUiType(form_inventor)[0]
 
-form_order = resource_path('order.ui')
+form_order = resource_path('../gui/order.ui')
 form_order_class = uic.loadUiType(form_order)[0]
 
-form_monitor = resource_path('monitor.ui')
+form_monitor = resource_path('../gui/monitor.ui')
 form_monitor_class = uic.loadUiType(form_monitor)[0]
 
-form_signin = resource_path('signin.ui')
+form_signin = resource_path('../gui/signin.ui')
 form_signin_class = uic.loadUiType(form_signin)[0]
 
 
@@ -479,7 +478,6 @@ class MonitorWindow(QDialog, form_monitor_class):
         self.close()  # 새 창 닫음
 
     def start_stream(self):
-        self.thread = VideoThread(0)  # Replace with your webcam index or video stream URL
         self.thread.change_pixmap_signal.connect(self.update_image)
         self.thread.start()
 
@@ -491,29 +489,6 @@ class MonitorWindow(QDialog, form_monitor_class):
 
     def update_image(self, image):
         self.image_label.setPixmap(QPixmap.fromImage(image))
-
-class VideoThread(QThread):
-    change_pixmap_signal = pyqtSignal(QImage)
-
-    def __init__(self, url):
-        super().__init__()
-        self.url = url
-        self._is_running = True
-
-    def run(self):
-        cap = cv2.VideoCapture(self.url)
-        while self._is_running:
-            ret, frame = cap.read()
-            if ret:
-                rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                h, w, ch = rgb_image.shape
-                bytes_per_line = ch * w
-                convert_to_qt_format = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
-                p = convert_to_qt_format.scaled(640, 480, Qt.KeepAspectRatio)
-                self.change_pixmap_signal.emit(p)
-
-    def stop(self):
-        self._is_running = False
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
