@@ -3,10 +3,41 @@ import serial
 import struct
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from PyQt5 import uic
+from PyQt5 import uic, QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 
-from_class = uic.loadUiType("./gui/test.ui")[0]
+#from_class = uic.loadUiType("Han_ws/PyQt/card_machine.ui")[0]
+
+
+class Ui_Dialog(object):
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(320, 240)
+        self.linecharge = QtWidgets.QLineEdit(Dialog)
+        self.linecharge.setGeometry(QtCore.QRect(120, 50, 181, 25))
+        self.linecharge.setObjectName("linecharge")
+        self.linepayment = QtWidgets.QLineEdit(Dialog)
+        self.linepayment.setGeometry(QtCore.QRect(120, 90, 181, 25))
+        self.linepayment.setObjectName("linepayment")
+        self.label = QtWidgets.QLabel(Dialog)
+        self.label.setGeometry(QtCore.QRect(30, 50, 67, 17))
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(Dialog)
+        self.label_2.setGeometry(QtCore.QRect(30, 90, 67, 17))
+        self.label_2.setObjectName("label_2")
+        self.btnreset = QtWidgets.QPushButton(Dialog)
+        self.btnreset.setGeometry(QtCore.QRect(200, 160, 89, 25))
+        self.btnreset.setObjectName("btnreset")
+
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def retranslateUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        self.label.setText(_translate("Dialog", "charge"))
+        self.label_2.setText(_translate("Dialog", "payment"))
+        self.btnreset.setText(_translate("Dialog", "reset"))
 
 class Receiver(QThread) :
     def __init__ (self, conn, parent=None) :
@@ -29,7 +60,7 @@ class Receiver(QThread) :
         print("recv stop")
         self.is_running = False
 
-class WindowClass(QMainWindow, from_class) :
+class WindowClass(QMainWindow, Ui_Dialog) :
     def __init__(self) :
         super().__init__()
         self.setupUi(self)
