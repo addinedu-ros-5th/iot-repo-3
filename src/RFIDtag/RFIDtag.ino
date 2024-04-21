@@ -23,7 +23,7 @@ MFRC522::StatusCode writeData(int index, byte* data, int length);
 MFRC522::StatusCode readData(int index, byte* data);
 
 void setup() {
-  Serial.begin(9600);   // Initialize serial communications with the PC
+  Serial.begin(115200);   // Initialize serial communications with the PC
   SPI.begin();      // Init SPI bus
   rc522.PCD_Init();   // Init MFRC522
   for (int i = 0; i < 6; i++)
@@ -35,12 +35,10 @@ void setup() {
 void loop() {
   SPI.begin();      // Init SPI bus
   rc522.PCD_Init();   // Init MFRC522
-  // String cmd = "";
   int recv_size = 0;
   char recv_buffer[16];
   while (Serial.available() > 0)
   {
-    //cmd = Serial.readStringUntil('\n');
     recv_size = Serial.readBytesUntil('\n', recv_buffer, 16);
   }
   if (!rc522.PICC_IsNewCardPresent()) {
@@ -49,28 +47,29 @@ void loop() {
   if (!rc522.PICC_ReadCardSerial()){
     return;
   }
-
-
   MFRC522::StatusCode status;
-  TagData t_data, id_data;
+  TagData t_data;
   String s_temp;
 
   if (recv_size > 0)
   {
-    char cmd[2];
+    char cmd[3];
     memset(cmd, 0x00, sizeof(cmd));
     memcpy(cmd, recv_buffer, 2);
-    
+    Serial.println("");
+    Serial.write(cmd, 2);
+    Serial.println("");
     if (strncmp(cmd, "Iw", 2) == 0)
     {
+        Serial.write(recv_buffer, recv_size);
+        Serial.println("");
         Serial.println("ar : write");
-        byte id[14];
+        byte id[16];
         memset(id, 0x00, sizeof(id));
         status = writeData(52, id, sizeof(id));
-        Serial.write(id, sizeof(id));
-        memcpy(id, recv_buffer + 2, sizeof(id));
-        Serial.write(id, sizeof(id));
+        memcpy(id, recv_buffer + 2, recv_size - 2);
         status = writeData(52, id, sizeof(id));
+        Serial.write(id, sizeof(id));
         /*
         t_data.id = 7885;
         s_temp = "kim";
@@ -91,7 +90,7 @@ void loop() {
         byte id[16];
         memset(id, 0x00, sizeof(id));
         status = readData(52, id);
-        Serial.write(id, sizeof(id));
+        Serial.write(id, 14);
         Serial.println("");
         /*
         Serial.println("");
@@ -178,14 +177,16 @@ MFRC522::StatusCode readData(int index, byte* data)
   MFRC522::StatusCode status = checkAuth(index);
   if (status != MFRC522::STATUS_OK)
   {
+    Serial.println(status);
     return status;
   }
-  byte buffer[16];
-  byte length = 16;
+  byte buffer[18];
+  byte length = 18;
   status = rc522.MIFARE_Read(index, buffer, &length);
+  Serial.println(status);
   if (status == MFRC522::STATUS_OK)
   {
-    memcpy(data, buffer, 16);
+    memcpy(data, buffer, 18);
   }
   return status;
 }
