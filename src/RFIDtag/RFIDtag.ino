@@ -56,14 +56,10 @@ void loop() {
     char cmd[3];
     memset(cmd, 0x00, sizeof(cmd));
     memcpy(cmd, recv_buffer, 2);
-    Serial.println("");
-    Serial.write(cmd, 2);
-    Serial.println("");
     if (strncmp(cmd, "Iw", 2) == 0)
     {
         Serial.write(recv_buffer, recv_size);
-        Serial.println("");
-        Serial.println("ar : write");
+        Serial.println("ar : id write");
         byte id[16];
         memset(id, 0x00, sizeof(id));
         status = writeData(52, id, sizeof(id));
@@ -84,14 +80,24 @@ void loop() {
         */
         //rc522.PICC_DumpToSerial(&(rc522.uid));
     }
+    else if (strncmp(cmd, "Nw", 2) == 0)
+    {
+        Serial.write(recv_buffer, recv_size);
+        Serial.println("ar : name write");
+        byte idname[16];
+        memset(idname, 0x00, sizeof(idname));
+        status = writeData(53, idname, sizeof(idname));
+        memcpy(idname, recv_buffer + 2, recv_size - 2);
+        status = writeData(53, idname, sizeof(idname));
+        Serial.write(idname, sizeof(idname));
+    }
     else if (strncmp(cmd, "Ir", 2) == 0)
     {
-        Serial.println("ar : read");
+        Serial.println("ar : id read");
         byte id[16];
         memset(id, 0x00, sizeof(id));
         status = readData(52, id);
         Serial.write(id, 14);
-        Serial.println("");
         /*
         Serial.println("");
         status = readTagData(56, t_data);
@@ -102,6 +108,14 @@ void loop() {
         Serial.println(String(t_data.addf));
         Serial.println(String(t_data.addt));
         */
+    }
+    else if (strncmp(cmd, "Nr", 2) == 0)
+    {
+        Serial.println("ar : name read");
+        byte idname[16];
+        memset(idname, 0x00, sizeof(idname));
+        status = readData(53, idname);
+        Serial.write(idname, 14);
     }
     else 
     {
@@ -183,7 +197,6 @@ MFRC522::StatusCode readData(int index, byte* data)
   byte buffer[18];
   byte length = 18;
   status = rc522.MIFARE_Read(index, buffer, &length);
-  Serial.println(status);
   if (status == MFRC522::STATUS_OK)
   {
     memcpy(data, buffer, 18);
