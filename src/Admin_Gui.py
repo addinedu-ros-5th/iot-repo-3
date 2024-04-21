@@ -361,7 +361,7 @@ class OrderWindow(QDialog, form_order_class):
 
 #         self.users = {
 #             "한영철": "1",
-#             "김서연": "2",
+#             "박서연": "2",
 #             "김민경": "3",
 #             "곽민기": "4"
 #         }
@@ -404,7 +404,7 @@ class signinWindow(QDialog, form_signin_class):
 
         self.users = {
             "한영철": "1",
-            "김서연": "2",
+            "박서연": "2",
             "김민경": "3",
             "곽민기": "4"
         }
