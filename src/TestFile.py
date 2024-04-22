@@ -23,15 +23,19 @@ class Receiver(QThread) :
             if self.conn.readable() :
                 line = self.conn.read_until(b'\n')
                 if (len(line)) > 0 :
-                    line = line[:-2].decode()
-                    if line[:2] == "Ir" :
-                        self.id = line[2:]
-                        print("Id : ", self.id)
-                    elif line[:2] == "Nr" :
-                        self.name = line[2:]
+                    line = line[:-2]
+                    if line[:2].decode() == "Ir" :
+                        self.id_1 = line[2:6].decode()
+                        self.id_2 = line[6:10].decode()
+                        self.id_3 = int.from_bytes(line[10:12], 'little')
+                        print("Id_1 : ", self.id_1)
+                        print("Id_2 : ", self.id_2)
+                        print("Id_3 : ", self.id_3)
+                    elif line[:2].decode() == "Nr" :
+                        self.name = line[2:].decode()
                         print("name : ", self.name)
-                    elif line[:2] == "nr" :
-                        self.num = line[2:]
+                    elif line[:2].decode() == "nr" :
+                        self.num = line[2:].decode()
                         print("num : ", self.num)
                     
     def stop (self) :
@@ -43,7 +47,7 @@ class WindowClass(QMainWindow, from_class) :
         super().__init__()
         self.setupUi(self)
 
-        self.conn = serial.Serial(port='COM5', baudrate=115200, timeout=1)
+        self.conn = serial.Serial(port='/dev/ttyACM0', baudrate=115200, timeout=1)
 
         self.recv = Receiver(self.conn)
         self.recv.start()
@@ -60,12 +64,15 @@ class WindowClass(QMainWindow, from_class) :
     def write (self) :
         print("write")
         self.write_text()
-        req_data = struct.pack('<2s8sc',b'Iw',self.write_id.encode(),b'\n')
+        self.write_text2()
+        req_data = struct.pack('<2s4s4sic',self.cmd.encode(),self.write_id[:4].encode(),self.write_id[4:8].encode(),int(self.write_id[8:]),b'\n')
         self.conn.write(req_data)
 
     def write_text(self) :
         self.write_id = self.lineEdit.text()
-        print("Text in line edit:", self.write_id)
+
+    def write_text2(self) :
+        self.cmd = self.lineEdit_2.text()
 
 if __name__ == "__main__" :
     app = QApplication(sys.argv)

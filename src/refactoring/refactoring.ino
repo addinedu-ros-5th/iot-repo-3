@@ -41,12 +41,14 @@ void loop() {
   if (recv_size > 0)
   {
     char cmd[3];
-    memset(cmd, 0x00, sizeof(cmd));
+    memset(cmd, 0x00, sizeof(cmd)); 
     memcpy(cmd, recv_buffer, 2);
     if (strncmp(cmd, "Iw", 2) == 0)
     {
         int index = 52;
-        handleCommand(recv_buffer, recv_size, index);
+        handleCommand(recv_buffer + 2, recv_size - 2, index);
+        //handleCommand(recv_buffer + 6, 4, index);
+        //handleCommand(recv_buffer + 10, 4, index);
     }
     else if (strncmp(cmd, "Nw", 2) == 0)
     {
@@ -64,7 +66,7 @@ void loop() {
       memset(data_id, 0x00, sizeof(data_id));
       status = readData(52, data_id);
       Serial.print("Ir");
-      Serial.write(data_id, 14);
+      Serial.write(data_id, 10);
       Serial.println("");
       byte data_name[16];
       memset(data_name, 0x00, sizeof(data_name));
@@ -130,7 +132,7 @@ void handleCommand(char* recv_buffer, int recv_size, int index)
     byte data[16];
     memset(data, 0x00, sizeof(data));
     status = writeData(index, data, sizeof(data));
-    memcpy(data, recv_buffer + 2, recv_size - 2);
+    memcpy(data, recv_buffer, recv_size);
     status = writeData(index, data, sizeof(data));
     Serial.write(data, sizeof(data));
 }
