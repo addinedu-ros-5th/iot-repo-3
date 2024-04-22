@@ -1,4 +1,5 @@
 import sys
+import time
 import serial
 import struct
 from PyQt5.QtWidgets import *
@@ -23,7 +24,15 @@ class Receiver(QThread) :
                 line = self.conn.read_until(b'\n')
                 if (len(line)) > 0 :
                     line = line[:-2].decode()
-                    print(line)
+                    if line[:2] == "Ir" :
+                        self.id = line[2:]
+                        print("Id : ", self.id)
+                    elif line[:2] == "Nr" :
+                        self.name = line[2:]
+                        print("name : ", self.name)
+                    elif line[:2] == "nr" :
+                        self.num = line[2:]
+                        print("num : ", self.num)
                     
     def stop (self) :
         print("recv stop")
@@ -44,27 +53,18 @@ class WindowClass(QMainWindow, from_class) :
 
     def read (self) :
         print("read")
-        self.read_text()
-        req_data = struct.pack('<2sc',b'Ir',b'\n')
+        req_data = struct.pack('<2sc',b'Re',b'\n')
         self.conn.write(req_data)
-        req_data = struct.pack('<2sc',b'Nr',b'\n')
-        self.conn.write(req_data)
-
-    def read_text(self) :
-        self.read_id = self.lineEdit_2.text()
-        print("Text in line edit:", self.read_id)
+        time.sleep(1)
 
     def write (self) :
         print("write")
         self.write_text()
         req_data = struct.pack('<2s8sc',b'Iw',self.write_id.encode(),b'\n')
         self.conn.write(req_data)
-        req_data = struct.pack('<2s8sc',b'Nw',self.write_name.encode(),b'\n')
-        self.conn.write(req_data)
 
     def write_text(self) :
         self.write_id = self.lineEdit.text()
-        self.write_name = self.lineEdit_2.text()
         print("Text in line edit:", self.write_id)
 
 if __name__ == "__main__" :
