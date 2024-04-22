@@ -26,10 +26,11 @@ void loop() {
   SPI.begin();      // Init SPI bus
   rc522.PCD_Init();   // Init MFRC522
   int recv_size = 0;
-  char recv_buffer[16];
+  char recv_buffer[20];
   while (Serial.available() > 0)
   {
-    recv_size = Serial.readBytesUntil('\n', recv_buffer, 16);
+    Serial.println("input");
+    recv_size = Serial.readBytesUntil('\n', recv_buffer, 20);
   }
   if (!rc522.PICC_IsNewCardPresent()) {
     return;
@@ -37,9 +38,9 @@ void loop() {
   if (!rc522.PICC_ReadCardSerial()){
     return;
   }
-
   if (recv_size > 0)
   {
+    Serial.println("in");
     char cmd[3];
     memset(cmd, 0x00, sizeof(cmd)); 
     memcpy(cmd, recv_buffer, 2);
@@ -47,42 +48,22 @@ void loop() {
     {
         int index = 52;
         handleCommand(recv_buffer + 2, recv_size - 2, index);
-        //handleCommand(recv_buffer + 6, 4, index);
-        //handleCommand(recv_buffer + 10, 4, index);
-    }
-    else if (strncmp(cmd, "Nw", 2) == 0)
-    {
-        int index = 53;
-        handleCommand(recv_buffer, recv_size, index);
-    }
-    else if (strncmp(cmd, "nw", 2) == 0)
-    {
-        int index = 54;
-        handleCommand(recv_buffer, recv_size, index);
     }
     else if (strncmp(cmd, "Re", 2) == 0)
     {
+      Serial.println("inReadingphase");
       byte data_id[16];
       memset(data_id, 0x00, sizeof(data_id));
       status = readData(52, data_id);
       Serial.print("Ir");
-      Serial.write(data_id, 10);
-      Serial.println("");
-      byte data_name[16];
-      memset(data_name, 0x00, sizeof(data_name));
-      status = readData(53, data_name);
-      Serial.print("Nr");
-      Serial.write(data_name, 14);
-      Serial.println("");
-      byte data_num[16];
-      memset(data_num, 0x00, sizeof(data_num));
-      status = readData(54, data_num);
-      Serial.print("nr");
-      Serial.write(data_num, 14);
+      Serial.write(data_id, 16);
       Serial.println("");
     }
-    else
+    else if (strncmp(cmd, "HI", 2) == 0)
     {
+      Serial.println("HIHello World");
+    }
+    else {
         Serial.println("unknown");
         status = MFRC522::STATUS_ERROR;
     }
@@ -103,7 +84,7 @@ MFRC522::StatusCode writeData(int index, byte* data, int length)
   {
     return status;
   }
-  byte buffer[14];
+  byte buffer[18];
   memset(buffer, 0x00, sizeof(buffer));
   memcpy(buffer, data, length);
 
@@ -129,7 +110,7 @@ MFRC522::StatusCode readData(int index, byte* data)
 }
 void handleCommand(char* recv_buffer, int recv_size, int index)
 {    
-    byte data[16];
+    byte data[20];
     memset(data, 0x00, sizeof(data));
     status = writeData(index, data, sizeof(data));
     memcpy(data, recv_buffer, recv_size);
