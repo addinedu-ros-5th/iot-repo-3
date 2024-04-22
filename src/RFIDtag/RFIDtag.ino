@@ -21,6 +21,7 @@ MFRC522::StatusCode readTagData(int index, TagData& data);
 MFRC522::MIFARE_Key key;
 MFRC522::StatusCode writeData(int index, byte* data, int length);
 MFRC522::StatusCode readData(int index, byte* data);
+void handleCommand(char* recv_buffer, int recv_size, int index);
 
 void setup() {
   Serial.begin(115200);   // Initialize serial communications with the PC
@@ -61,28 +62,15 @@ void loop() {
     Serial.println("");
     if (strncmp(cmd, "Iw", 2) == 0)
     {
-        Serial.write(recv_buffer, recv_size);
-        Serial.println("");
-        Serial.println("ar : write");
-        byte id[16];
-        memset(id, 0x00, sizeof(id));
-        status = writeData(52, id, sizeof(id));
-        memcpy(id, recv_buffer + 2, recv_size - 2);
-        status = writeData(52, id, sizeof(id));
-        Serial.write(id, sizeof(id));
-        /*
-        t_data.id = 7885;
-        s_temp = "kim";
-        s_temp.toCharArray(t_data.name, s_temp.length() + 1);
-        t_data.total = 5448;
-        t_data.payment = 7888;
-        s_temp = "seocho";
-        s_temp.toCharArray(t_data.addf, s_temp.length() + 1);
-        s_temp = "gasan";
-        s_temp.toCharArray(t_data.addt, s_temp.length() + 1);
-        status = writeTagData(56, t_data);
-        */
-        //rc522.PICC_DumpToSerial(&(rc522.uid));
+      handleCommand(recv_buffer, recv_size, 52);
+    }
+    else if ()
+    {
+      handleCommand(recv_buffer, recv_size, 53);
+    }
+    else if ()
+    {
+      handleCommand(recv_buffer, recv_size, 53);
     }
     else if (strncmp(cmd, "Ir", 2) == 0)
     {
@@ -92,16 +80,6 @@ void loop() {
         status = readData(52, id);
         Serial.write(id, 14);
         Serial.println("");
-        /*
-        Serial.println("");
-        status = readTagData(56, t_data);
-        Serial.print("ID : ");  Serial.println(t_data.id);
-        Serial.println(String(t_data.name));
-        Serial.println(t_data.total);
-        Serial.println(t_data.payment);
-        Serial.println(String(t_data.addf));
-        Serial.println(String(t_data.addt));
-        */
     }
     else 
     {
@@ -109,11 +87,6 @@ void loop() {
         status = MFRC522::STATUS_ERROR;
     }
   }
-  
-//  if (status == MFRC522::STATUS_OK)
-//  {
-//    Serial.println("success!");
-//  }
 }
 
 
@@ -189,4 +162,13 @@ MFRC522::StatusCode readData(int index, byte* data)
     memcpy(data, buffer, 18);
   }
   return status;
+}
+void handleCommand(char* recv_buffer, int recv_size, int index)
+{    
+    byte data[16];
+    memset(data, 0x00, sizeof(data));
+    status = writeData(index, data, sizeof(data));
+    memcpy(data, recv_buffer + 2, recv_size - 2);
+    status = writeData(index, data, sizeof(data));
+    Serial.write(data, sizeof(data));
 }
