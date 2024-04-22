@@ -5,4 +5,12 @@ IoT 프로젝트 3조 저장소.
 High efficiency, Safety First, ECO-friendly\
 Automation is Allways Right
 
-한영철,곽민기,김민경,박서연
+
+### 역할
+|이름|담당|
+|:---:|:---|
+|한영철|팀장,|
+|곽민기|-|
+|김민경|-|
+|박서연|-|
+
