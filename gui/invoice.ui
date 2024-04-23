@@ -294,12 +294,12 @@
     </property>
    </widget>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>90</x>
      <y>330</y>
-     <width>168</width>
+     <width>340</width>
      <height>33</height>
     </rect>
    </property>
@@ -318,7 +318,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="btnEnter">
+     <widget class="QPushButton" name="btnWrite">
       <property name="maximumSize">
        <size>
         <width>100</width>
@@ -330,6 +330,35 @@
       </property>
       <property name="text">
        <string>입력</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btnDownload">
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>불러오기</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btnUpload">
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::RightToLeft</enum>
+      </property>
+      <property name="text">
+       <string>저장하기</string>
       </property>
      </widget>
     </item>
@@ -374,6 +403,19 @@
    </property>
    <property name="text">
     <string>상품명</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelState">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>340</y>
+     <width>121</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Label</string>
    </property>
   </widget>
  </widget>

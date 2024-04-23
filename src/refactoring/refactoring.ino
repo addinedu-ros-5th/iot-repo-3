@@ -59,10 +59,6 @@ void loop() {
       Serial.write(data_id, 16);
       Serial.println("");
     }
-    else if (strncmp(cmd, "HI", 2) == 0)
-    {
-      Serial.println("HIHello World");
-    }
     else {
         Serial.println("unknown");
         status = MFRC522::STATUS_ERROR;
