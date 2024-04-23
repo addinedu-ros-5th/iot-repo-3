@@ -9,7 +9,7 @@ import mysql.connector
 
 
 
-#from_class = uic.loadUiType("/home/psy/src/sidebar.ui") [0]
+from_class = uic.loadUiType("./main/gui/sidebar.ui") [0]
 
 class MySideBar(QMainWindow, Ui_MainWindow):
     def __init__(self) :
