@@ -26,10 +26,10 @@ void loop() {
   SPI.begin();      // Init SPI bus
   rc522.PCD_Init();   // Init MFRC522
   int recv_size = 0;
-  char recv_buffer[16];
+  char recv_buffer[84];
   while (Serial.available() > 0)
   {
-    recv_size = Serial.readBytesUntil('\n', recv_buffer, 16);
+    recv_size = Serial.readBytesUntil('\n', recv_buffer, 84);
   }
   if (!rc522.PICC_IsNewCardPresent()) {
     return;
@@ -37,52 +37,50 @@ void loop() {
   if (!rc522.PICC_ReadCardSerial()){
     return;
   }
-
   if (recv_size > 0)
   {
-    char cmd[3];
+    char cmd[2];
     memset(cmd, 0x00, sizeof(cmd)); 
     memcpy(cmd, recv_buffer, 2);
     if (strncmp(cmd, "Iw", 2) == 0)
     {
         int index = 52;
-        handleCommand(recv_buffer + 2, recv_size - 2, index);
-        //handleCommand(recv_buffer + 6, 4, index);
-        //handleCommand(recv_buffer + 10, 4, index);
-    }
-    else if (strncmp(cmd, "Nw", 2) == 0)
-    {
-        int index = 53;
-        handleCommand(recv_buffer, recv_size, index);
-    }
-    else if (strncmp(cmd, "nw", 2) == 0)
-    {
-        int index = 54;
-        handleCommand(recv_buffer, recv_size, index);
+        handleCommand(recv_buffer + 2, 16, index);
+        handleCommand(recv_buffer + 18, 16, index+1);
+        handleCommand(recv_buffer + 34, 16, index+2);
+
+        handleCommand(recv_buffer + 50, 16, index+4);
+        handleCommand(recv_buffer + 68, 16, index+5);
     }
     else if (strncmp(cmd, "Re", 2) == 0)
     {
       byte data_id[16];
+      Serial.print("Re");
       memset(data_id, 0x00, sizeof(data_id));
       status = readData(52, data_id);
-      Serial.print("Ir");
-      Serial.write(data_id, 10);
+      Serial.write(data_id, 16);
+      
+      memset(data_id, 0x00, sizeof(data_id));
+      status = readData(53, data_id);
+      Serial.write(data_id, 16);
+
+      memset(data_id, 0x00, sizeof(data_id));
+      status = readData(54, data_id);
+      Serial.write(data_id, 16);
+
+      memset(data_id, 0x00, sizeof(data_id));
+      status = readData(56, data_id);
+      Serial.write(data_id, 16);
+
+      memset(data_id, 0x00, sizeof(data_id));
+      status = readData(57, data_id);
+      Serial.write(data_id, 16);
+      
       Serial.println("");
-      byte data_name[16];
-      memset(data_name, 0x00, sizeof(data_name));
-      status = readData(53, data_name);
-      Serial.print("Nr");
-      Serial.write(data_name, 14);
-      Serial.println("");
-      byte data_num[16];
-      memset(data_num, 0x00, sizeof(data_num));
-      status = readData(54, data_num);
-      Serial.print("nr");
-      Serial.write(data_num, 14);
-      Serial.println("");
+
+      rc522.PICC_DumpToSerial(&(rc522.uid));
     }
-    else
-    {
+    else {
         Serial.println("unknown");
         status = MFRC522::STATUS_ERROR;
     }
@@ -103,7 +101,7 @@ MFRC522::StatusCode writeData(int index, byte* data, int length)
   {
     return status;
   }
-  byte buffer[14];
+  byte buffer[16];
   memset(buffer, 0x00, sizeof(buffer));
   memcpy(buffer, data, length);
 
@@ -135,6 +133,5 @@ void handleCommand(char* recv_buffer, int recv_size, int index)
     memcpy(data, recv_buffer, recv_size);
     status = writeData(index, data, sizeof(data));
     Serial.write(data, sizeof(data));
+    Serial.println("");
 }
-
-    

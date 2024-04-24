@@ -1,5 +1,5 @@
 import sys
-import time
+import datetime
 import serial
 import struct
 from PyQt5.QtWidgets import *
@@ -33,9 +33,6 @@ class Receiver(QThread) :
                         self.senderName = line[18:30].decode()
                         self.senderNumber = int.from_bytes(line[30:34], 'little')
                         self.senderAddress = line[34:50].decode()
-                        self.senderName = line[50:62].decode()
-                        self.senderNumber = int.from_bytes(line[62:66], 'little')
-                        self.senderAddress = line[66:80].decode()
                         self.serialCommunicationState = 'Success'
                         self.is_reading = False
 
@@ -80,27 +77,26 @@ class WindowClass(QMainWindow, from_class) :
         self.DBCursor = self.DBConnection.cursor()
 
     def getFromDB(self):
-        DBquery = 'SELECT * FROM order_List;'
+        DBquery = 'SELECT * FROM stocks_list;'
         self.DBCursor.execute(DBquery)
         result = self.DBCursor.fetchall()
         self.list = []
         for data in result:
             self.list.append(data)
-        self.row = 6
-        self.recv.productName = self.list[self.row][3]
-        self.recv.senderName = self.list[self.row][2]
-        self.recv.senderNumber = self.list[self.row][5]
-        self.recv.senderAddress = self.list[self.row][6]
-        self.setTextToGUI()
+        #self.row = 6
+        #self.recv.productName = self.list[self.row][3]
+        #self.recv.senderName = self.list[self.row][2]
+        #self.recv.senderNumber = self.list[self.row][5]
+        #self.recv.senderAddress = self.list[self.row][6]
+        #self.setTextToGUI()
 
     def enrollment(self):
         self.getTextfromGUI()
-        self.DBquery = "INSERT INTO order_List (주문자명, 제품명, 가격, 배송지) VALUES (%s, %s, %s, %s);"
+        self.nowDateTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.DBquery = "INSERT INTO stocks_list (productName, stockOrderDate) VALUES (%s, %s);"
         self.DBCursor.execute(self.DBquery,
-                              (self.recv.senderName,
-                              self.recv.productName,
-                              self.recv.senderNumber,
-                              self.recv.senderAddress))
+                              (self.recv.productName,
+                               self.nowDateTime))
         self.DBConnection.commit()
         self.recv.variableInitialize()
         self.setTextToGUI()
@@ -134,9 +130,6 @@ class WindowClass(QMainWindow, from_class) :
                                b'Iw',
                                int(self.recv.productID),
                                self.recv.productName.ljust(14, ' ').encode(),
-                               self.recv.senderName.ljust(12, ' ').encode(),
-                               int(self.recv.senderNumber),
-                               self.recv.senderAddress.ljust(16, ' ').encode(),
                                self.recv.senderName.ljust(12, ' ').encode(),
                                int(self.recv.senderNumber),
                                self.recv.senderAddress.ljust(16, ' ').encode(),b'\n')
