@@ -49,8 +49,8 @@ void loop() {
         handleCommand(recv_buffer + 18, 16, index+1);
         handleCommand(recv_buffer + 34, 16, index+2);
 
-        handleCommand(recv_buffer + 50, 16, index+4);
-        handleCommand(recv_buffer + 68, 16, index+5);
+        //handleCommand(recv_buffer + 50, 16, index+4);
+        //handleCommand(recv_buffer + 68, 16, index+5);
     }
     else if (strncmp(cmd, "Re", 2) == 0)
     {
@@ -63,11 +63,11 @@ void loop() {
       memset(data_id, 0x00, sizeof(data_id));
       status = readData(53, data_id);
       Serial.write(data_id, 16);
-
+      
       memset(data_id, 0x00, sizeof(data_id));
       status = readData(54, data_id);
       Serial.write(data_id, 16);
-
+      /*
       memset(data_id, 0x00, sizeof(data_id));
       status = readData(56, data_id);
       Serial.write(data_id, 16);
@@ -75,10 +75,9 @@ void loop() {
       memset(data_id, 0x00, sizeof(data_id));
       status = readData(57, data_id);
       Serial.write(data_id, 16);
-      
+      */
+      Serial.print("Ed");
       Serial.println("");
-
-      rc522.PICC_DumpToSerial(&(rc522.uid));
     }
     else {
         Serial.println("unknown");

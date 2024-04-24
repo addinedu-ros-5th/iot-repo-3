@@ -62,8 +62,8 @@ class WindowClass(QMainWindow, form_main_class):
         self.groupBox_2.show()
         self.userEdit.clear()
         try:
-            if self.amrbase is not None:
-                self.amrbase.close()
+            if self.DBConnection is not None:
+                self.DBConnection.close()
                 print("데이터베이스 연결이 닫혔습니다.")
         except:
             print('z')
@@ -89,16 +89,16 @@ class WindowClass(QMainWindow, form_main_class):
 
     # def btn_main_to_order(self):
     #     self.hide()
-    #     self.order = OrderWindow(self.amrbase)
+    #     self.order = OrderWindow(self.DBConnection)
     #     self.order.exec_()
     #     self.show()
 
     def btn_main_to_order(self):
         try:
             if self.user is not None:
-                if self.amrbase is not None:
+                if self.DBConnection is not None:
                     self.hide()
-                    self.order = OrderWindow(self.amrbase)
+                    self.order = OrderWindow(self.DBConnection)
                     self.order.exec_()
                     self.show()
                 else:
@@ -132,12 +132,12 @@ class WindowClass(QMainWindow, form_main_class):
 
         if username == "곽민기":  
             try:
-                self.amrbase = mysql.connector.connect(
-                    host="database-1.cdsoiiswk6c2.ap-northeast-2.rds.amazonaws.com",
-                    port=3306,
-                    user="root",
-                    password="k60746074",
-                    database="iot_db"
+                self.DBConnection = mysql.connector.connect(
+                    host = 'database-1.c96mmei8egml.ap-northeast-2.rds.amazonaws.com', 
+                    port = 3306,
+                    user = 'iot_hyc',
+                    password = '1',
+                    database = 'iot_project'
                 )
                 print("데이터베이스에 연결되었습니다.")
                 # self.database_updater = DatabaseUpdater()
@@ -215,7 +215,7 @@ class InventorWindow(QDialog, form_inventor_class):
 #         self.database_updater.update_database()
 # ---------------------------------------------------------------------------------
 class OrderWindow(QDialog, form_order_class):
-    def __init__(self, amrbase):
+    def __init__(self, DBConnection):
         super().__init__()
         self.setupUi(self)
         self.move(100, 100)
@@ -224,7 +224,7 @@ class OrderWindow(QDialog, form_order_class):
         self.btn_cancle.clicked.connect(self.cancel_order)
         # self.btn_refresh.clicked.connect(self.refresh_order)
 
-        self.amrbase = amrbase
+        self.DBConnection = DBConnection
         self.load_order_list()
         # self.timer = QTimer(self)
         # self.timer.timeout.connect(self.update_database)
@@ -236,8 +236,8 @@ class OrderWindow(QDialog, form_order_class):
         self.close()
 
     def load_order_list(self):
-        if self.amrbase is not None:
-            cursor = self.amrbase.cursor()
+        if self.DBConnection is not None:
+            cursor = self.DBConnection.cursor()
             cursor.execute("SELECT * FROM order_List")
             orders = cursor.fetchall()
             cursor.close()
@@ -267,12 +267,12 @@ class OrderWindow(QDialog, form_order_class):
 
                 delivery_status_item.setText(new_status)
 
-                if self.amrbase is not None:
-                    cursor = self.amrbase.cursor()
+                if self.DBConnection is not None:
+                    cursor = self.DBConnection.cursor()
                     order_id = self.widgetOrder.item(selected_row, 0).text()
                     query = "UPDATE order_List SET 배송상태 = %s WHERE id = %s"
                     cursor.execute(query, (new_status, order_id))
-                    self.amrbase.commit()
+                    self.DBConnection.commit()
                     cursor.close()
                     print("주문이 수정되었습니다.")
                 else:
@@ -289,12 +289,12 @@ class OrderWindow(QDialog, form_order_class):
     #         if reply == QMessageBox.Yes:
     #             self.widgetOrder.removeRow(selected_row)
 
-    #             if self.amrbase is not None:
-    #                 cursor = self.amrbase.cursor()
+    #             if self.DBConnection is not None:
+    #                 cursor = self.DBConnection.cursor()
     #                 order_id = self.widgetOrder.item(selected_row, 0).text()  # 예시: 주문 ID 가져오기
     #                 query = "DELETE FROM order_List WHERE id = %s"
     #                 cursor.execute(query, (order_id,))
-    #                 self.amrbase.commit()
+    #                 self.DBConnection.commit()
     #                 cursor.close()
     #                 QMessageBox.information(self, "취소 완료", "블랙 리스트 등록완료!", QMessageBox.Ok)
     #                 print("주문이 취소되었습니다.")
@@ -317,11 +317,11 @@ class OrderWindow(QDialog, form_order_class):
 
                     self.widgetOrder.removeRow(selected_row)
 
-                    if self.amrbase is not None:
-                        cursor = self.amrbase.cursor()
+                    if self.DBConnection is not None:
+                        cursor = self.DBConnection.cursor()
                         query = "DELETE FROM order_List WHERE id = %s"
                         cursor.execute(query, (order_id,))
-                        self.amrbase.commit()
+                        self.DBConnection.commit()
                         cursor.close()
                         QMessageBox.information(self, "취소 완료", "주문이 취소되었습니다.", QMessageBox.Ok)
                         print("주문이 취소되었습니다.")

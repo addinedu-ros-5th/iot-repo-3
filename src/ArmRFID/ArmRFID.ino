@@ -79,6 +79,7 @@ void loop() {
       Serial.println(str);
       */
 
+      Serial.print("Ed");
       Serial.println(" ");
     } else {
       Serial.println("unknown");

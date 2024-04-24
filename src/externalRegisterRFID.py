@@ -8,7 +8,7 @@ from PyQt5 import uic, QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 import mysql.connector
 
-from_class = uic.loadUiType("./main/gui/invoice.ui")[0]
+from_class = uic.loadUiType("./gui/invoice.ui")[0]
 
 class Receiver(QThread) :
     def __init__ (self, arduinoConnection, parent=None) :
@@ -27,14 +27,17 @@ class Receiver(QThread) :
                 line = self.arduinoConnection.read_until(b'\n')
                 if (len(line)) > 0 :
                     line = line[:-2]
-                    if line[:2].decode() == "Re" :
-                        self.productID = int.from_bytes(line[2:4], 'little')
-                        self.productName = line[4:18].decode()
-                        self.senderName = line[18:30].decode()
-                        self.senderNumber = int.from_bytes(line[30:34], 'little')
-                        self.senderAddress = line[34:50].decode()
-                        self.serialCommunicationState = 'Success'
-                        self.is_reading = False
+                    try :
+                        if line[:2].decode() == "Re" and line[50:52].decode() == "Ed":
+                            self.productID = int.from_bytes(line[2:4], 'little')
+                            self.productName = line[4:18].decode()
+                            self.senderName = line[18:30].decode()
+                            self.senderNumber = int.from_bytes(line[30:34], 'little')
+                            self.senderAddress = line[34:50].decode()
+                            self.serialCommunicationState = 'Success'
+                            self.is_reading = False
+                    except :
+                        pass
 
 
     def stop (self) :
@@ -102,16 +105,18 @@ class WindowClass(QMainWindow, from_class) :
         self.setTextToGUI()
 
     def orderRead (self) :
-        self.count = 0
         self.recv.variableInitialize()
         self.recv.serialCommunicationState = 'reading...'
         self.labelState.setText(self.recv.serialCommunicationState)
-        req_data = struct.pack('<2sc',b'Re',b'\n')
-        self.arduinoConnection.write(req_data)
+
+        self.count = 0
+        self.req_data = struct.pack('<2sc',b'Re',b'\n')
+        self.arduinoConnection.write(self.req_data)
         self.errorTimeOut()
+        print(self.count)
+
         self.labelState.setText(self.recv.serialCommunicationState)
         self.setTextToGUI()
-        print(self.count)
 
     def errorTimeOut(self) :
         self.recv.is_reading = True
@@ -120,13 +125,17 @@ class WindowClass(QMainWindow, from_class) :
             if (self.count > 3000000) : 
                 self.recv.serialCommunicationState = 'error : timeout'
                 self.labelState.setText(self.recv.serialCommunicationState)
+                self.arduinoConnection.write(self.req_data)
+                self.count = -3000000
+            if self.count == 0 :
                 break
+
 
     def orderWrite (self) :
         self.recv.serialCommunicationState = 'writing...'
         self.labelState.setText(self.recv.serialCommunicationState)
         self.getTextfromGUI()
-        req_data = struct.pack('<2sH14s12sI16s12sI16sc',
+        req_data = struct.pack('<2sH14s12sI16sc',
                                b'Iw',
                                int(self.recv.productID),
                                self.recv.productName.ljust(14, ' ').encode(),
