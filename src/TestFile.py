@@ -130,7 +130,7 @@ class WindowClass(QMainWindow, form_main_class):
             self.groupBox_2.hide()
             self.groupBox.show()
 
-        if username in self.users :  
+        if username in self.user :  
             try:
                 self.DBConnection = mysql.connector.connect(
                     host = 'database-1.c96mmei8egml.ap-northeast-2.rds.amazonaws.com', 
