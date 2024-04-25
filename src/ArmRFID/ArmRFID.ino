@@ -13,6 +13,7 @@ MFRC522::StatusCode status;
 void handleCommand(char* recv_buffer, int recv_size, int index);
 
 void setup() {
+  
   Serial.begin(115200);  // Initialize serial communications with the PC
   SPI.begin();           // Init SPI bus
   rc522.PCD_Init();      // Init MFRC522
