@@ -14,10 +14,10 @@ I/O를 제작하여 실제 동작을 구현하며, GUI, Server, I/O가 서로 �
 ㈜ADI로보로지스틱스솔루션, High efficiency, Safety First, ECO-friendly
 |이름|역할|담당|
 |:---:|:---|:---|
-|한영철|통신, 팀장|시리얼 통신, RFID 정보 입출력|
-|곽민기|제어|Crane 동작 제어, 관리자 GUI, DB 연동|
-|김민경|설계|하드웨어 설계&제작, Conveyor 동작 제어, 분류기|
-|박서연|UI/UX|고객 GUI, DB 구축, DB 연동|
+|[한영철](https://github.com/OProcessing)|통신, 팀장|시리얼 통신, RFID 정보 입출력|
+|[곽민기](https://github.com/Ignimkk)|제어|Crane 동작 제어, 관리자 GUI, DB 연동|
+|[김민경](https://github.com/miggyo)|설계|하드웨어 설계&제작, Conveyor 동작 제어, 분류기|
+|[박서연](https://github.com/seoyean)|UI/UX|고객 GUI, DB 구축, DB 연동|
 
 #### 기간
 2024년 04월 17일 ~ 2024년 04월 25일
