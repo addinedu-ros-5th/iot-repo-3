@@ -12,10 +12,14 @@
 const int motor_1 = 3;
 const int motor_2 = 5;
 const int motor_flag = 4;
+
+
 int speed = 0;// 속도값
 int stop =0; //멈춤 flag
 int count =0;
 int robot_arm = 0;
+int input = 0;
+
 MFRC522 mfrc522(SS_PIN, RST_PIN); 
 
 void setup() {
@@ -31,6 +35,7 @@ void setup() {
 
 void loop() {
   robot_arm = digitalRead(motor_flag);
+  // Serial.println(robot_arm);
   // Serial.println(stop);
   if (robot_arm == 1 && stop ==0) {
     stop = 1;
@@ -42,14 +47,14 @@ void loop() {
     speed = 0;
     Serial.println("stopped");
     // Serial.println(count);
-    if (count == 500) {
+    if (count == 1000) {
       count = 0;
       stop = 0;
     }
   }
 
   if (stop != 1) {
-    speed = 120;
+    speed = 160;
     Serial.println("is working");
   }
 

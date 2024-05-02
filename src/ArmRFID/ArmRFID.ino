@@ -13,6 +13,7 @@ MFRC522::StatusCode status;
 void handleCommand(char* recv_buffer, int recv_size, int index);
 
 void setup() {
+  
   Serial.begin(115200);  // Initialize serial communications with the PC
   SPI.begin();           // Init SPI bus
   rc522.PCD_Init();      // Init MFRC522
@@ -39,18 +40,27 @@ void loop() {
     char cmd[2];
     memset(cmd, 0x00, sizeof(cmd));
     memcpy(cmd, recv_buffer, 2);
+    int index = 52;
     if (strncmp(cmd, "Iw", 2) == 0) {
-      int index = 52;
       handleCommand(recv_buffer + 2, 16, index);
       handleCommand(recv_buffer + 18, 16, index + 1);
       handleCommand(recv_buffer + 34, 16, index + 2);
-      /*
-      handleCommand(recv_buffer + 50, 16, index + 4);
-      handleCommand(recv_buffer + 68, 16, index + 5);
-      */
+    } 
+    else if (strncmp(cmd, "Sw", 2) == 0) {
+      // Serial 입력으로 Sw + 문자 입력하면 56번지에 저장한다.
+      handleCommand(recv_buffer + 2, 2, index + 4);
+    }
+    else if (strncmp(cmd, "Sr", 2) == 0) {
+      // 56번지에 저장된 값을 읽어와서 1번째 자리까지 str로 저장
+      byte data_id[16];
+      memset(data_id, 0x00, sizeof(data_id));
+      status = readData(index + 4, data_id);
+      String str = bytesToString(data_id, 1);
+      Serial.println(str);
+      Serial.println("");
+
     } 
     else if (strncmp(cmd, "Re", 2) == 0) {
-      int index = 52;
       byte data_id[16];
       Serial.print("Re");
       memset(data_id, 0x00, sizeof(data_id));
@@ -63,25 +73,12 @@ void loop() {
 
       memset(data_id, 0x00, sizeof(data_id));
       status = readData(index + 2, data_id);
-      size_t length = 16;// sizeof(data_id) / sizeof(data_id[0]);
-      String str = bytesToString(data_id, length);
       Serial.write(data_id, 16);
-      /*
-      memset(data_id, 0x00, sizeof(data_id));
-      status = readData(index + 4, data_id);
-      Serial.write(data_id, 16);
-
-      memset(data_id, 0x00, sizeof(data_id));
-      status = readData(index + 5, data_id);
-      Serial.write(data_id, 16);
-
-      Serial.print("문자열은 : ");
-      Serial.println(str);
-      */
 
       Serial.print("Ed");
       Serial.println(" ");
-    } else {
+    } 
+    else {
       Serial.println("unknown");
       status = MFRC522::STATUS_ERROR;
     }
