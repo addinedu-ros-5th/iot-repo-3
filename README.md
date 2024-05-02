@@ -7,7 +7,7 @@ GUI를 제작하고 GUI로 입력된 내용들은 Data서버에 저장한다.\
 I/O를 제작하여 실제 동작을 구현하며, GUI, Server, I/O가 서로 연결되어 원활하고 유기적인 시스템을 만든다.
 
 ### 개발 환경
-프로그램 : Python, PyQt5, MySQL, Arduino
+프로그램 : Python, PyQt5, MySQL, Arduino\
 협업 Tool : Jira, Confluence, Git, Google drive, Slack, UML
 
 ### 팀 소개
@@ -21,3 +21,14 @@ I/O를 제작하여 실제 동작을 구현하며, GUI, Server, I/O가 서로 �
 
 #### 기간
 2024년 04월 17일 ~ 2024년 04월 25일
+
+
+프로젝트 구성
+프로젝트 프로그램 설치방법
+프로젝트 프로그램 사용법
+저작권 및 사용권 정보
+프로그래머 정보
+버그 및 디버그
+참고 및 출처
+버전 및 업데이트 정보
+FAQ
