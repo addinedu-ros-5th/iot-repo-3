@@ -36,7 +36,12 @@ class Receiver(QThread) :
                             self.senderAddress = line[34:49].decode()
                             self.serialCommunicationState = 'Success'
                             self.is_reading = False
+                        elif line[:2].decode() == "UC" :
+                            self.serialCommunicationState = 'Unknown Command'
+                        elif line[:2].decode() == "CF" :
+                            self.serialCommunicationState = 'Please tag the Card'
                     except :
+                        self.serialCommunicationState = 'Communication Failed'
                         pass
 
 
@@ -63,7 +68,7 @@ class WindowClass(QMainWindow, from_class) :
         self.recv.start()
         self.connectToDB()
         self.getFromDB()
-        
+
         self.btnRead.clicked.connect(self.orderRead)
         self.btnWrite.clicked.connect(self.orderWrite)
         self.btnUpload.clicked.connect(self.enrollment)
@@ -72,7 +77,7 @@ class WindowClass(QMainWindow, from_class) :
 
     def connectToDB(self):
         self.DBConnection = mysql.connector.Connect(
-            host = 'database-1.c96mmei8egml.ap-northeast-2.rds.amazonaws.com', 
+            host = 'database-1.c96mmei8egml.ap-northeast-2.rds.amazonaws.com',
             port = '3306',
             user = 'iot_hyc',
             password = '1',
@@ -98,9 +103,7 @@ class WindowClass(QMainWindow, from_class) :
         self.getTextfromGUI()
         self.nowDateTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         self.DBquery = "INSERT INTO stocks_list (productName, stockOrderDate) VALUES (%s, %s);"
-        self.DBCursor.execute(self.DBquery,
-                              (self.recv.productName,
-                               self.nowDateTime))
+        self.DBCursor.execute(self.DBquery,(self.recv.productName,self.nowDateTime))
         self.DBConnection.commit()
         self.recv.variableInitialize()
         self.setTextToGUI()
@@ -124,11 +127,12 @@ class WindowClass(QMainWindow, from_class) :
         while (self.recv.is_reading == True) :
             self.count += 1
             if (self.count > 3000000) : 
-                self.recv.serialCommunicationState = 'error : timeout'
+                self.recv.serialCommunicationState = 'error : retrying...'
                 self.labelState.setText(self.recv.serialCommunicationState)
                 self.arduinoConnection.write(self.req_data)
                 self.count = -3000000
             if self.count == 0 :
+                self.recv.serialCommunicationState = 'error : timeout'
                 break
 
 

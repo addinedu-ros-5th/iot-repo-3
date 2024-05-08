@@ -1,5 +1,5 @@
 # iot-repo-3
-IoT 프로젝트 3조 저장소. 
+IoT 프로젝트 3조 저장소.
 
 ### 목적 및 방향
 물류센터에서의 입고부터 출고, 고객 배송까지의 과정을 총망라하는 시스템을 구현한다.\
@@ -7,8 +7,12 @@ GUI를 제작하고 GUI로 입력된 내용들은 Data서버에 저장한다.\
 I/O를 제작하여 실제 동작을 구현하며, GUI, Server, I/O가 서로 연결되어 원활하고 유기적인 시스템을 만든다.
 
 ### 개발 환경
-프로그램 : Python, PyQt5, MySQL, Arduino
-협업 Tool : Jira, Confluence, Git, Google drive, Slack, UML
+언어 :
+<img src="https://img.shields.io/badge/c++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white">
+<img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
+, QML\
+프로그램 : VScode, PyQt5, <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">, Arduino\
+Tool : Jira, Confluence, <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">, <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">, <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">, UML
 
 ### 팀 소개
 ㈜ADI로보로지스틱스솔루션, High efficiency, Safety First, ECO-friendly

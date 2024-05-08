@@ -32,6 +32,7 @@ void loop() {
     recv_size = Serial.readBytesUntil('\n', recv_buffer, 84);
   }
   if (!rc522.PICC_IsNewCardPresent()) {
+    if (recv_size > 0) Serial.print("CF");
     return;
   }
   if (!rc522.PICC_ReadCardSerial()){
@@ -48,9 +49,6 @@ void loop() {
         handleCommand(recv_buffer + 2, 16, index);
         handleCommand(recv_buffer + 18, 16, index+1);
         handleCommand(recv_buffer + 34, 16, index+2);
-
-        //handleCommand(recv_buffer + 50, 16, index+4);
-        //handleCommand(recv_buffer + 68, 16, index+5);
     }
     else if (strncmp(cmd, "Re", 2) == 0)
     {
@@ -67,20 +65,11 @@ void loop() {
       memset(data_id, 0x00, sizeof(data_id));
       status = readData(54, data_id);
       Serial.write(data_id, 16);
-      /*
-      memset(data_id, 0x00, sizeof(data_id));
-      status = readData(56, data_id);
-      Serial.write(data_id, 16);
-
-      memset(data_id, 0x00, sizeof(data_id));
-      status = readData(57, data_id);
-      Serial.write(data_id, 16);
-      */
       Serial.print("Ed");
       Serial.println("");
     }
     else {
-        Serial.println("unknown");
+        Serial.println("UC");
         status = MFRC522::STATUS_ERROR;
     }
   }
