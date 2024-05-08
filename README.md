@@ -18,10 +18,21 @@ Tool : Jira, Confluence, <img src="https://img.shields.io/badge/git-F05032?style
 ㈜ADI로보로지스틱스솔루션, High efficiency, Safety First, ECO-friendly
 |이름|역할|담당|
 |:---:|:---|:---|
-|한영철|통신, 팀장|시리얼 통신, RFID 정보 입출력|
-|곽민기|제어|Crane 동작 제어, 관리자 GUI, DB 연동|
-|김민경|설계|하드웨어 설계&제작, Conveyor 동작 제어, 분류기|
-|박서연|UI/UX|고객 GUI, DB 구축, DB 연동|
+|[한영철](https://github.com/OProcessing)|통신, 팀장|시리얼 통신, RFID 정보 입출력|
+|[곽민기](https://github.com/Ignimkk)|제어|Crane 동작 제어, 관리자 GUI, DB 연동|
+|[김민경](https://github.com/miggyo)|설계|하드웨어 설계&제작, Conveyor 동작 제어, 분류기|
+|[박서연](https://github.com/seoyean)|UI/UX|고객 GUI, DB 구축, DB 연동|
 
 #### 기간
 2024년 04월 17일 ~ 2024년 04월 25일
+
+
+프로젝트 구성
+프로젝트 프로그램 설치방법
+프로젝트 프로그램 사용법
+저작권 및 사용권 정보
+프로그래머 정보
+버그 및 디버그
+참고 및 출처
+버전 및 업데이트 정보
+FAQ
