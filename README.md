@@ -2,17 +2,46 @@
 IoT 프로젝트 3조 저장소.
 
 ### 목적 및 방향
-물류센터에서의 입고부터 출고, 고객 배송까지의 과정을 총망라하는 시스템을 구현한다.\
-GUI를 제작하고 GUI로 입력된 내용들은 Data서버에 저장한다.\
-I/O를 제작하여 실제 동작을 구현하며, GUI, Server, I/O가 서로 연결되어 원활하고 유기적인 시스템을 만든다.
+물류센터에서의 입고부터 출고, 고객 배송까지의 과정을 시스템을 구현\
+시스템 관리를 위한 GUI 제작, Log 기록을 통한 관리, 동작 구현과 유기적인 시스템
+
+### 동작 예시
+크레인
+```cpp
+ void rotateMotor(int toDegree_LR, int toDegree_UD, bool isRelative=false) {
+        if (isRelative) {
+            toDegree_LR = (toDegree_LR == NOMOV) ? NOMOV : leftRightMotor->read() + toDegree_LR;
+            toDegree_UD = (toDegree_UD == NOMOV) ? NOMOV : upDownMotor->read() - toDegree_UD;
+        }
+
+        // one motor
+        if (toDegree_UD == NOMOV) {
+            moveWithSpeed(leftRightMotor, toDegree_LR);
+        }
+        // two motors
+        else {
+            moveWithSpeed(leftRightMotor, toDegree_LR, upDownMotor, toDegree_UD);
+        }
+    }
+```
+RFID 통신모듈
+```cpp
+void handleCommand(char* recv_buffer, int recv_size, int index)
+{    
+    byte data[16];
+    memset(data, 0x00, sizeof(data));
+    status = writeData(index, data, sizeof(data));
+    memcpy(data, recv_buffer, recv_size);
+    status = writeData(index, data, sizeof(data));
+    Serial.write(data, sizeof(data));
+    Serial.println("");
+}
+```
 
 ### 개발 환경
-언어 :
-<img src="https://img.shields.io/badge/c++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white">
-<img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
-, QML\
-프로그램 : VScode, PyQt5, <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">, Arduino\
-Tool : Jira, Confluence, <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">, <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">, <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">, UML
+언어 : C++, Python, QML\
+환경 : VScode, PyQt5, MySQL, Arduino\
+Tool : Jira, Confluence, Git, Github, AWS, UML
 
 ### 팀 소개
 ㈜ADI로보로지스틱스솔루션, High efficiency, Safety First, ECO-friendly
@@ -25,14 +54,3 @@ Tool : Jira, Confluence, <img src="https://img.shields.io/badge/git-F05032?style
 
 #### 기간
 2024년 04월 17일 ~ 2024년 04월 25일
-
-
-프로젝트 구성
-프로젝트 프로그램 설치방법
-프로젝트 프로그램 사용법
-저작권 및 사용권 정보
-프로그래머 정보
-버그 및 디버그
-참고 및 출처
-버전 및 업데이트 정보
-FAQ
